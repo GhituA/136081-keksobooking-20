@@ -1,6 +1,14 @@
 'use strict';
 
 document.querySelector('.map').classList.remove('map--faded');
+var OFFER_NUMBER = 8;
+var OFFER_PRICE_MAX = 1000000;
+var OFFER_ROOMS_MAX = 3;
+var OFFER_GUESTS_MAX = 3;
+var PIN_WIDTH = 50;
+var PIN_HEIGHT = 70;
+var PIN_LOCATIONY_MIN = 130;
+var PIN_LOCATIONY_MAX = 630;
 var mapWidth = document.querySelector('.map').clientWidth;
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var pinList = document.querySelector('.map__pins');
@@ -24,43 +32,38 @@ var getRandomElement = function (elements) {
   return randomElement;
 };
 
-var getRandomArray = function (elements) {
-  var randomArray = [];
-  for (var i = 0; i < getRandomNumber(1, elements.length); i++) {
-    randomArray[i] = elements[Math.floor(Math.random() * elements.length)];
-  }
-  return randomArray;
-};
+for (var i = 0; i < OFFER_NUMBER; i++) {
+  var locationX = getRandomNumber(1, mapWidth);
+  var locationY = getRandomNumber(PIN_LOCATIONY_MIN, PIN_LOCATIONY_MAX);
 
-for (var i = 0; i < 8; i++) {
-  offers[i] = {
+  offers.push({
     author: {
-      avatarUrl: 'img/avatars/user0' + getRandomNumber(1, 8) + '.png',
+      avatarUrl: 'img/avatars/user0' + getRandomNumber(1, OFFER_NUMBER) + '.png',
     },
     offer: {
-      title: 'Заголовок предложения №' + getRandomNumber(1, 8),
-      address: location.locationX + ',' + location.locationY, // <--- не нашла как присвоить значение другого ключа
-      price: getRandomNumber(0, 1000000),
+      title: 'Заголовок предложения №' + getRandomNumber(1, OFFER_NUMBER),
+      address: locationX + ', ' + locationY,
+      price: getRandomNumber(1, OFFER_PRICE_MAX),
       type: getRandomElement(offerTypes),
-      rooms: getRandomNumber(0, 3),
-      guests: getRandomNumber(1, 3),
+      rooms: getRandomNumber(1, OFFER_ROOMS_MAX),
+      guests: getRandomNumber(1, OFFER_GUESTS_MAX),
       checkin: getRandomElement(offerCheckins),
-      checkout: getRandomElement(offerCheckins), // <--- не нашла как присвоить значение другого ключа (checkin)
-      features: getRandomArray(offerFeatures),
+      checkout: getRandomElement(offerCheckins),
+      features: offerFeatures.slice(0, getRandomNumber(0, offerFeatures.length - 1)),
       description: getRandomElement(offerDescriptions),
-      photos: getRandomArray(offerPhotos)
+      photos: offerPhotos.slice(0, getRandomNumber(0, offerFeatures.length - 1))
     },
     location: {
-      locationX: getRandomNumber(1, mapWidth),
-      locationY: getRandomNumber(130, 630)
+      x: locationX,
+      y: locationY
     }
-  };
+  });
 }
 
 var renderPin = function (offer) {
   var element = pinTemplate.cloneNode(true);
-  element.style.left = offer.location.locationX - 25 + 'px';
-  element.style.top = offer.location.locationY - 70 + 'px';
+  element.style.left = offer.location.x - PIN_WIDTH / 2 + 'px';
+  element.style.top = offer.location.y - PIN_HEIGHT + 'px';
 
   element.querySelector('img').src = offer.author.avatarUrl;
   element.querySelector('img').alt = offer.offer.title;
