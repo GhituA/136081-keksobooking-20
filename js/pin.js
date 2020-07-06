@@ -1,19 +1,18 @@
 'use strict';
 
 (function () {
-  document.querySelector('.map').classList.remove('map--faded');
   var mapWidth = document.querySelector('.map').clientWidth;
-  var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-  var pinList = document.querySelector('.map__pins');
-  var pinFragment = document.createDocumentFragment();
+  // var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+  // var pinList = document.querySelector('.map__pins');
+  // var pinFragment = document.createDocumentFragment();
 
   var offers = [];
   var OFFER_NUMBER = 8;
   var OFFER_PRICE_MAX = 1000000;
   var OFFER_ROOMS_MAX = 100;
   var OFFER_GUESTS_MAX = 3;
-  var PIN_WIDTH = 50;
-  var PIN_HEIGHT = 70;
+  // var PIN_WIDTH = 50;
+  // var PIN_HEIGHT = 70;
   var PIN_LOCATIONY_MIN = 130;
   var PIN_LOCATIONY_MAX = 630;
 
@@ -65,18 +64,19 @@
     });
   }
 
-  var renderPin = function (input) {
-    var pinElement = pinTemplate.cloneNode(true);
-    pinElement.style.left = input.location.x - PIN_WIDTH / 2 + 'px';
-    pinElement.style.top = input.location.y - PIN_HEIGHT + 'px';
+  // var renderPin = function (input) {
+  //   var pinElement = pinTemplate.cloneNode(true);
+  //   pinElement.style.left = input.location.x - PIN_WIDTH / 2 + 'px';
+  //   pinElement.style.top = input.location.y - PIN_HEIGHT + 'px';
+  //
+  //   pinElement.querySelector('img').src = input.author.avatarUrl;
+  //   pinElement.querySelector('img').alt = input.offer.title;
+  //
+  //   return pinElement;
+  // };
+  // offers.forEach(function (offer) {
+  //   pinFragment.appendChild(renderPin(offer));
+  // });
+  // pinList.appendChild(pinFragment);
 
-    pinElement.querySelector('img').src = input.author.avatarUrl;
-    pinElement.querySelector('img').alt = input.offer.title;
-
-    return pinElement;
-  };
-  offers.forEach(function (offer) {
-    pinFragment.appendChild(renderPin(offer));
-  });
-  pinList.appendChild(pinFragment);
 })();
