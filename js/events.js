@@ -11,22 +11,13 @@
   var mapFilter = document.querySelector('.map__filters');
   var mapFilterElements = mapFilter.children;
   var adFormAddress = adForm.querySelector('[name="address"]');
+  var renderPins = window.pin.render;
+  var offers = window.pin.offers;
 
   var toggleFormElements = function (elements, active) {
-    for (var i = 0; i < elements.length; i++) {
-      if (active === false) {
-        elements[i].disabled = true;
-      } else {
-        elements[i].disabled = false;
-      }
-    }
-    // elements.forEach(function (element) { <!-- не понимаю почему не работает -->
-    //   if (active === false) {
-    //     element.disabled = true;
-    //   } else {
-    //     element.disabled = false;
-    //   }
-    // })
+    Array.from(elements).forEach(function (element) {
+      element.disabled = !active;
+    });
   };
 
   var getCoordinates = function (pinWidth, pinHeight) {
@@ -37,8 +28,9 @@
   };
 
   var setInactiveMode = function () {
-    toggleFormElements(adFormElements, false);
-    toggleFormElements(mapFilterElements, false);
+    toggleFormElements(adFormElements);
+    toggleFormElements(mapFilterElements);
+    adFormAddress.readOnly = true;
     adFormAddress.value = getCoordinates(MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT / 2);
 
   };
@@ -46,9 +38,10 @@
   var setActiveMode = function () {
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
-    toggleFormElements(adFormElements);
-    toggleFormElements(mapFilterElements);
+    toggleFormElements(adFormElements, true);
+    toggleFormElements(mapFilterElements, true);
     adFormAddress.value = getCoordinates(MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT_ACTIVE);
+    renderPins(offers);
   };
 
   mainPin.addEventListener('mousedown', function (evt) {
