@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var mapWidth = document.querySelector('.map').clientWidth;
 
   var offers = [];
   var OFFER_NUMBER = 8;
@@ -30,6 +29,7 @@
   };
 
   for (var i = 0; i < OFFER_NUMBER; i++) {
+    var mapWidth = document.querySelector('.map').clientWidth;
     var pinLocationX = getRandomNumber(1, mapWidth);
     var pinLocationY = getRandomNumber(PIN_LOCATIONY_MIN, PIN_LOCATIONY_MAX);
 
