@@ -32,7 +32,10 @@
     palace: '10000'
   };
 
-  var checkInputValidity = function (rooms, guests) {
+  var checkCapacityValidity = function () {
+    var guests = capacityField.value;
+    var rooms = roomField.value;
+
     if (!roomCapacityMap[rooms].includes(guests)) {
       roomField.setCustomValidity(errorMap[rooms]);
     } else {
@@ -42,60 +45,57 @@
 
   roomField.addEventListener('change', function (evt) {
     var roomsCount = evt.target.value;
-    var guestsCount = capacityField.value;
     for (var j = 0; j < capacityField.options.length; j++) {
       capacityField.options[j].disabled = !roomCapacityMap[roomsCount].includes(capacityField.options[j].value);
     }
-    checkInputValidity(roomsCount, guestsCount);
+    checkCapacityValidity();
   });
 
-  capacityField.addEventListener('change', function (evt) {
-    var roomsCount = roomField.value;
-    var guestsCount = evt.target.value;
-    checkInputValidity(roomsCount, guestsCount);
+  capacityField.addEventListener('change', function () {
+    checkCapacityValidity();
   });
 
   titleField.addEventListener('input', function (evt) {
     var valueLength = evt.target.value.length;
-    if (valueLength < MIN_TITLE_LENGTH) {
+    if (valueLength === 0) {
+      titleField.setCustomValidity('Это поле обязательно для заполнения');
+    } else if (valueLength < MIN_TITLE_LENGTH) {
       titleField.setCustomValidity('Минимальная длина заголовка: 30 символов. Введите ещё ' + (MIN_TITLE_LENGTH - valueLength) + ' симв.');
     } else if (valueLength > MAX_TITLE_LENGTH) {
       titleField.setCustomValidity('Минимальная длина заголовка: 100 символов. Удалите лишние ' + (valueLength - MAX_TITLE_LENGTH) + ' симв.');
     } else {
       titleField.setCustomValidity('');
     }
-  });
+  }); // add onsubmit error message //
 
-  typeField.addEventListener('change', function (evt) {
-    priceField.placeholder = typeMap[evt.target.value];
-    priceField.min = typeMap[evt.target.value];
-  });
-
-  // --- customeValidity не работает или криво (не обновляется цена в сообщении об ошибке) --- //
-
-  priceField.addEventListener('change', function (evt) {
+  var checkPriceValidity = function () {
     var typeValue = typeField.value;
-    if (evt.target.value < typeMap[typeValue]) {
+    priceField.placeholder = typeMap[typeValue];
+    priceField.min = typeMap[typeValue];
+
+    if (priceField.value < typeMap[typeValue]) {
       priceField.setCustomValidity('Минимальная цена выбранного типа жилья: ' + typeMap[typeValue] + ' за ночь');
-    } else if (evt.target.value > MAX_PRICE) {
+    } else if (priceField.value > MAX_PRICE) {
       priceField.setCustomValidity('Максимальная цена выбранного типа жилья: 1 000 000 руб. за ночь');
     } else {
       priceField.setCustomValidity('');
     }
+  };
+
+  typeField.addEventListener('change', function () {
+    checkPriceValidity();
+  });
+
+  priceField.addEventListener('change', function () {
+    checkPriceValidity();
   });
 
   timeinField.addEventListener('change', function (evt) {
     timeoutField.value = evt.target.value;
   });
 
-  // --- customeValidity не убирается --- //
-
   timeoutField.addEventListener('change', function (evt) {
-    if (evt.target.value !== timeinField.value) {
-      timeoutField.setCustomValidity('Время выезда должно соответствовать времени заезда');
-    } else {
-      priceField.setCustomValidity('');
-    }
+    timeinField.value = evt.target.value;
   });
 
 })();

@@ -14,7 +14,6 @@
   var adFormAddress = adForm.querySelector('#address');
   var renderPins = window.pin.render;
   var offers = window.pin.offers;
-  var renderCard = window.card.render;
 
   var toggleFormElements = function (elements, active) {
     Array.from(elements).forEach(function (element) {
@@ -59,19 +58,5 @@
   });
 
   setInactiveMode();
-
-  var mapPinsBlock = document.querySelector('.map__pins');
-  var mapPins = mapPinsBlock.querySelectorAll('.map__pin:not(.map__pin--main)');
-
-  var onPinClick = function () {
-    for (var i = 0; i < mapPins.length; i++) {
-      mapPins[i].addEventListener('click', function () {
-        renderCard(offers);
-        mapPins.classList.add('map__pin--active');
-      });
-    }
-  };
-  onPinClick();
-
 
 })();
