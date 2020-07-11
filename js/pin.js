@@ -16,6 +16,7 @@
   var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var OFFER_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
   var renderCard = window.card.render;
+  var onEscPress = window.card.onEscPress;
 
   var getRandomNumber = function (min, max) {
     var randomNumber = Math.round(Math.random() * (max - min) + min);
@@ -67,6 +68,9 @@
     }
     element.classList.add('map__pin--active');
     renderCard(input);
+
+    document.addEventListener('keydown', onEscPress);
+
   };
 
   var getPinElement = function (input) {

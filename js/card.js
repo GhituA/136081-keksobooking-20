@@ -58,15 +58,27 @@
     photosBlock.appendChild(cardPhotofragment);
   };
 
+  var onEscPress = function (evt) {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      onCardClose();
+    }
+  };
+
   var onCardClose = function () {
     var mapCard = document.querySelector('.map__card');
     var activePin = document.querySelector('.map__pin--active');
     mapCard.remove();
-    activePin.classList.remove('map__pin--active');
+
+    if (activePin) {
+      activePin.classList.remove('map__pin--active');
+    }
+
+    document.removeEventListener('keydown', onEscPress);
   };
 
   var getCardElement = function (input) {
-    var map = document.querySelector('.map');
+
     var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
     var cardElement = cardTemplate.cloneNode(true);
     var cardTitle = cardElement.querySelector('.popup__title');
@@ -92,13 +104,8 @@
     cardTime.textContent = 'Заезд после ' + input.offer.checkin + ', выезд до ' + input.offer.checkout;
     cardFeatures.textContent = defineArray(input.offer.features, OFFER_FEATURES_MAP);
     cardDescription.textContent = input.offer.description;
-    cardPhotos = renderPhotos(cardPhotos, cardImg, input.offer.photos);
+    renderPhotos(cardPhotos, cardImg, input.offer.photos);
 
-    map.addEventListener('keydown', function (evt) {
-      if (evt.key === 'Escape') {
-        onCardClose();
-      }
-    });
 
     closeCard.addEventListener('click', function () {
       onCardClose();
@@ -117,7 +124,8 @@
   };
 
   window.card = {
-    render: renderCard
+    render: renderCard,
+    onEscPress: onEscPress
   };
 
 })();
