@@ -9,10 +9,9 @@
     var activePin = document.querySelector('.map__pin--active');
     var mapCard = document.querySelector('.map__card');
 
-    if (activePin) {
-      activePin.classList.remove('map__pin--active');
-    } else if (mapCard) {
+    if (mapCard) {
       mapCard.remove();
+      activePin.classList.remove('map__pin--active');
     }
     element.classList.add('map__pin--active');
     renderCard(input);

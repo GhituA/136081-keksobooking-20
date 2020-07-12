@@ -72,7 +72,6 @@
 
     if (mapCard) {
       mapCard.remove();
-    } else if (activePin) {
       activePin.classList.remove('map__pin--active');
     }
 
@@ -112,13 +111,7 @@
       onCardClose();
     });
 
-
-    document.addEventListener('keydown', function (evt) {
-      if (evt.key === 'Escape') {
-        onCardClose();
-      }
-    });
-
+    onCardClose();
 
     return cardElement;
   };
