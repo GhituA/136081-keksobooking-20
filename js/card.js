@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+
   var OFFER_TYPES_MAP = {
     'flat': 'Квартира',
     'bungalo': 'Бунгало',
@@ -68,9 +69,10 @@
   var onCardClose = function () {
     var mapCard = document.querySelector('.map__card');
     var activePin = document.querySelector('.map__pin--active');
-    mapCard.remove();
 
-    if (activePin) {
+    if (mapCard) {
+      mapCard.remove();
+    } else if (activePin) {
       activePin.classList.remove('map__pin--active');
     }
 
@@ -78,7 +80,6 @@
   };
 
   var getCardElement = function (input) {
-
     var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
     var cardElement = cardTemplate.cloneNode(true);
     var cardTitle = cardElement.querySelector('.popup__title');
@@ -110,6 +111,14 @@
     closeCard.addEventListener('click', function () {
       onCardClose();
     });
+
+
+    document.addEventListener('keydown', function (evt) {
+      if (evt.key === 'Escape') {
+        onCardClose();
+      }
+    });
+
 
     return cardElement;
   };

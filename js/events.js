@@ -13,7 +13,7 @@
   var mapFilterElements = mapFilter.children;
   var adFormAddress = adForm.querySelector('#address');
   var renderPins = window.pin.render;
-  var offers = window.pin.offers;
+  var offers = window.data.offers;
 
   var toggleFormElements = function (elements, active) {
     Array.from(elements).forEach(function (element) {
