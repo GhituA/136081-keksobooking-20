@@ -5,14 +5,15 @@
   var MAIN_PIN_HEIGHT = 65;
   var MAIN_PIN_HEIGHT_ACTIVE = 84;
   var map = document.querySelector('.map');
+
   var mainPin = document.querySelector('.map__pin--main');
   var adForm = document.querySelector('.ad-form');
   var adFormElements = adForm.children;
   var mapFilter = document.querySelector('.map__filters');
   var mapFilterElements = mapFilter.children;
-  var adFormAddress = adForm.querySelector('[name="address"]');
+  var adFormAddress = adForm.querySelector('#address');
   var renderPins = window.pin.render;
-  var offers = window.pin.offers;
+  var offers = window.data.offers;
 
   var toggleFormElements = function (elements, active) {
     Array.from(elements).forEach(function (element) {
@@ -32,7 +33,6 @@
     toggleFormElements(mapFilterElements);
     adFormAddress.readOnly = true;
     adFormAddress.value = getCoordinates(MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT / 2);
-
   };
 
   var setActiveMode = function () {
@@ -42,6 +42,7 @@
     toggleFormElements(mapFilterElements, true);
     adFormAddress.value = getCoordinates(MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT_ACTIVE);
     renderPins(offers);
+
   };
 
   mainPin.addEventListener('mousedown', function (evt) {
@@ -57,4 +58,5 @@
   });
 
   setInactiveMode();
+
 })();
