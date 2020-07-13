@@ -81,7 +81,7 @@
   var setContext = function (className, text, parentElement) {
     var element = parentElement.querySelector(className);
     element.textContent = text;
-  }
+  };
 
   var getCardElement = function (input) {
     var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
