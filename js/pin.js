@@ -5,7 +5,7 @@
   var renderCard = window.card.render;
   var onEscPress = window.card.onEscPress;
 
-  var openCard = function (element, input) {
+  var onPinClick = function (element, input) {
     var activePin = document.querySelector('.map__pin--active');
     var mapCard = document.querySelector('.map__card');
 
@@ -13,11 +13,10 @@
       mapCard.remove();
       activePin.classList.remove('map__pin--active');
     }
+
     element.classList.add('map__pin--active');
     renderCard(input);
-
     document.addEventListener('keydown', onEscPress);
-
   };
 
   var getPinElement = function (input) {
@@ -25,21 +24,24 @@
     var PIN_HEIGHT = 70;
     var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
     var pinElement = pinTemplate.cloneNode(true);
+    var mainPinElement = pinElement.classList.contains('map__pin--main');
 
     pinElement.style.left = input.location.x - PIN_WIDTH / 2 + 'px';
     pinElement.style.top = input.location.y - PIN_HEIGHT + 'px';
     pinElement.querySelector('img').src = input.author.avatarUrl;
     pinElement.querySelector('img').alt = input.offer.title;
 
-    pinElement.addEventListener('click', function () {
-      openCard(pinElement, input);
-    });
+    if (!mainPinElement) {
+      pinElement.addEventListener('click', function () {
+        onPinClick(pinElement, input);
+      });
 
-    pinElement.addEventListener('keydown', function (evt) {
-      if (evt.key === 'Enter') {
-        openCard(pinElement, input);
-      }
-    });
+      pinElement.addEventListener('keydown', function (evt) {
+        if (evt.key === 'Enter') {
+          onPinClick(pinElement, input);
+        }
+      });
+    }
 
     return pinElement;
   };
