@@ -78,40 +78,34 @@
     document.removeEventListener('keydown', onEscPress);
   };
 
+  var setContext = function (className, text, parentElement) {
+    var element = parentElement.querySelector(className);
+    element.textContent = text;
+  }
+
   var getCardElement = function (input) {
     var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
     var cardElement = cardTemplate.cloneNode(true);
-    var cardTitle = cardElement.querySelector('.popup__title');
-    var cardAdress = cardElement.querySelector('.popup__text--address');
-    var cardPrice = cardElement.querySelector('.popup__text--price');
-    var cardType = cardElement.querySelector('.popup__type');
-    var cardCapacity = cardElement.querySelector('.popup__text--capacity');
-    var cardTime = cardElement.querySelector('.popup__text--time');
-    var cardFeatures = cardElement.querySelector('.popup__features');
-    var cardDescription = cardElement.querySelector('.popup__description');
     var cardPhotos = cardElement.querySelector('.popup__photos');
     var cardImg = cardElement.querySelector('.popup__photo');
     var cardAvatar = cardElement.querySelector('.popup__avatar');
     var closeCard = cardElement.querySelector('.popup__close');
 
-    cardTitle.textContent = input.offer.title;
+    setContext('.popup__title', input.offer.title, cardElement);
+    setContext('.popup__text--address', input.offer.address, cardElement);
+    setContext('.popup__text--price', input.offer.price + ' ₽/ночь', cardElement);
+    setContext('.popup__type', OFFER_TYPES_MAP[input.offer.type], cardElement);
+    setContext('.popup__text--capacity', input.offer.rooms + ' ' + defineRooms(input.offer.rooms, DEFINED_ROOMS) + ' для ' + input.offer.guests + ' ' + defineGuests(input.offer.guests, DEFINED_GUESTS), cardElement);
+    setContext('.popup__text--time', 'Заезд после ' + input.offer.checkin + ', выезд до ' + input.offer.checkout, cardElement);
+    setContext('.popup__features', defineArray(input.offer.features, OFFER_FEATURES_MAP), cardElement);
+    setContext('.popup__description', input.offer.description, cardElement);
     cardAvatar.src = input.author.avatarUrl;
     cardAvatar.alt = input.offer.title;
-    cardAdress.textContent = input.offer.address;
-    cardPrice.textContent = input.offer.price + ' ₽/ночь';
-    cardType.textContent = OFFER_TYPES_MAP[input.offer.type];
-    cardCapacity.textContent = input.offer.rooms + ' ' + defineRooms(input.offer.rooms, DEFINED_ROOMS) + ' для ' + input.offer.guests + ' ' + defineGuests(input.offer.guests, DEFINED_GUESTS);
-    cardTime.textContent = 'Заезд после ' + input.offer.checkin + ', выезд до ' + input.offer.checkout;
-    cardFeatures.textContent = defineArray(input.offer.features, OFFER_FEATURES_MAP);
-    cardDescription.textContent = input.offer.description;
     renderPhotos(cardPhotos, cardImg, input.offer.photos);
-
 
     closeCard.addEventListener('click', function () {
       onCardClose();
     });
-
-    onCardClose();
 
     return cardElement;
   };
