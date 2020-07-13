@@ -43,6 +43,20 @@
     }
   };
 
+  var checkPriceValidity = function () {
+    var typeValue = typeField.value;
+    priceField.placeholder = typeMap[typeValue];
+    priceField.min = typeMap[typeValue];
+
+    if (priceField.value < typeMap[typeValue]) {
+      priceField.setCustomValidity('Минимальная цена выбранного типа жилья: ' + typeMap[typeValue] + ' за ночь');
+    } else if (priceField.value > MAX_PRICE) {
+      priceField.setCustomValidity('Максимальная цена выбранного типа жилья: 1 000 000 руб. за ночь');
+    } else {
+      priceField.setCustomValidity('');
+    }
+  };
+
   roomField.addEventListener('change', function (evt) {
     var roomsCount = evt.target.value;
     for (var j = 0; j < capacityField.options.length; j++) {
@@ -67,20 +81,6 @@
       titleField.setCustomValidity('');
     }
   }); // add onsubmit error message //
-
-  var checkPriceValidity = function () {
-    var typeValue = typeField.value;
-    priceField.placeholder = typeMap[typeValue];
-    priceField.min = typeMap[typeValue];
-
-    if (priceField.value < typeMap[typeValue]) {
-      priceField.setCustomValidity('Минимальная цена выбранного типа жилья: ' + typeMap[typeValue] + ' за ночь');
-    } else if (priceField.value > MAX_PRICE) {
-      priceField.setCustomValidity('Максимальная цена выбранного типа жилья: 1 000 000 руб. за ночь');
-    } else {
-      priceField.setCustomValidity('');
-    }
-  };
 
   typeField.addEventListener('change', function () {
     checkPriceValidity();
