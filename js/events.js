@@ -13,8 +13,9 @@
   var adFormElements = adForm.children;
   var adFormAddress = adForm.querySelector('#address');
 
+  var onXHRload = window.load.onXHRload;
   var renderPins = window.pin.render;
-  var offers = window.data.offers;
+  var onLoadError = window.load.onLoadError;
   var onMainPinDrag = window.mainPin.drag;
   var getCoordinates = window.mainPin.getCoordinates;
 
@@ -53,7 +54,7 @@
     toggleFormElements(adFormElements, true);
     toggleFormElements(mapFilterElements, true);
     adFormAddress.value = getCoordinates(MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT_ACTIVE, mainPin.offsetLeft, mainPin.offsetTop);
-    renderPins(offers);
+    onXHRload(renderPins, onLoadError);
 
     mainPin.removeEventListener('mousedown', onMainPinMouseDown);
     mainPin.removeEventListener('keydown', onMainPinKeyDown);
