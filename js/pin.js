@@ -28,7 +28,7 @@
 
     pinElement.style.left = input.location.x - PIN_WIDTH / 2 + 'px';
     pinElement.style.top = input.location.y - PIN_HEIGHT + 'px';
-    pinElement.querySelector('img').src = input.author.avatarUrl;
+    pinElement.querySelector('img').src = input.author.avatar;
     pinElement.querySelector('img').alt = input.offer.title;
 
     if (!mainPinElement) {

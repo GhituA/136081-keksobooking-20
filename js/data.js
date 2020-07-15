@@ -33,7 +33,7 @@
 
     offers.push({
       author: {
-        avatarUrl: 'img/avatars/user0' + (i + 1) + '.png',
+        avatar: 'img/avatars/user0' + (i + 1) + '.png',
       },
       offer: {
         title: 'Заголовок предложения' + ' ' + (i + 1),

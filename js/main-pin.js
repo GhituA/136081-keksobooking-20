@@ -37,7 +37,7 @@
         y: moveEvt.clientY
       };
 
-      if (mainPin.offsetTop - shift.y > PIN_LOCATIONY_MIN - MAIN_PIN_HEIGHT_ACTIVE && mainPin.offsetTop - shift.y < PIN_LOCATIONY_MAX - MAIN_PIN_HEIGHT_ACTIVE && mainPin.offsetLeft - shift.x > 0 - MAIN_PIN_WIDTH / 2 && mainPin.offsetLeft - shift.x < mapWidth - MAIN_PIN_WIDTH / 2) {
+      if (mainPin.offsetTop - shift.y >= PIN_LOCATIONY_MIN - MAIN_PIN_HEIGHT_ACTIVE && mainPin.offsetTop - shift.y <= PIN_LOCATIONY_MAX - MAIN_PIN_HEIGHT_ACTIVE && mainPin.offsetLeft - shift.x >= 0 - Math.ceil(MAIN_PIN_WIDTH / 2) && mainPin.offsetLeft - shift.x < mapWidth - Math.floor(MAIN_PIN_WIDTH / 2)) {
         mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
         mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
       }
