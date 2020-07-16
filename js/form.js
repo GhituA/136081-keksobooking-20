@@ -12,6 +12,13 @@
   var priceField = document.querySelector('#price');
   var timeinField = document.querySelector('#timein');
   var timeoutField = document.querySelector('#timeout');
+  var adForm = document.querySelector('.ad-form');
+  var resetButton = adForm.querySelector('.ad-form__reset');
+  var map = document.querySelector('.map');
+  var onUpload = window.upload.onUpload;
+  var renderMessage = window.message.renderMessage;
+  var setInactiveMode = window.events.setInactiveMode;
+
   var roomCapacityMap = {
     '0': 'any',
     '1': ['1'],
@@ -57,6 +64,14 @@
     }
   };
 
+  var onFormReset = function () {
+    adForm.reset();
+  };
+
+  var addClassToElement = function (element, className) {
+    element.classList.add(className);
+  };
+
   roomField.addEventListener('change', function (evt) {
     var roomsCount = evt.target.value;
     for (var j = 0; j < capacityField.options.length; j++) {
@@ -97,5 +112,36 @@
   timeoutField.addEventListener('change', function (evt) {
     timeinField.value = evt.target.value;
   });
+
+  resetButton.addEventListener('click', onFormReset);
+  resetButton.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Enter') {
+      onFormReset();
+    }
+  });
+
+  var messageMap = {
+    success: '#success',
+    error: '#error'
+  };
+
+  var onSubmitSuccess = function () {
+    var mapPins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
+    onFormReset();
+    renderMessage(messageMap.success);
+    setInactiveMode();
+    addClassToElement(adForm, 'ad-form--disabled');
+    addClassToElement(map, 'map--faded');
+    mapPins.forEach(function (mapPin) {
+      mapPin.remove();
+    });
+  };
+
+  var onFormSubmit = function (evt) {
+    evt.preventDefault();
+    onUpload(new FormData(adForm), onSubmitSuccess, renderMessage(messageMap.error));
+  };
+
+  adForm.addEventListener('submit', onFormSubmit);
 
 })();

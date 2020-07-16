@@ -63,4 +63,9 @@
 
   setInactiveMode();
 
+  window.events = {
+    setInactiveMode: setInactiveMode,
+    toggleFormElements: toggleFormElements
+  };
+
 })();
