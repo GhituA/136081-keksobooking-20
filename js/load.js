@@ -21,7 +21,10 @@
     document.body.insertAdjacentElement('afterbegin', node);
   };
 
-  var checkUploadStatus = function (xhr, onSuccess, onError) {
+  var onXHRload = function (url, method, onSuccess, onError, data) {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+
     xhr.addEventListener('load', function () {
       if (xhr.status === statusCode.OK) {
         onSuccess(xhr.response);
@@ -29,23 +32,6 @@
         onError();
       }
     });
-  };
-
-  var checkloadStatus = function (xhr, onSuccess, onError) {
-    xhr.addEventListener('load', function () {
-      if (xhr.status === statusCode.OK) {
-        onSuccess(xhr.response);
-      } else {
-        onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
-      }
-    });
-  };
-
-  var onXHRload = function (url, method, statusCheck, onSuccess, onError, data) {
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-
-    statusCheck(xhr, onSuccess, onError);
 
     xhr.addEventListener('error', function () {
       onError('Произошла ошибка соединения');
@@ -66,11 +52,11 @@
   };
 
   var load = function (onSuccess, onError) {
-    onXHRload(LOAD_URL, 'GET', checkloadStatus, onSuccess, onError);
+    onXHRload(LOAD_URL, 'GET', onSuccess, onError);
   };
 
   var upload = function (data, onSuccess, onError) {
-    onXHRload(UPLOAD_URL, 'POST', checkUploadStatus, onSuccess, onError, data);
+    onXHRload(UPLOAD_URL, 'POST', onSuccess, onError, data);
   };
 
   window.load = {

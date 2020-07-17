@@ -26,7 +26,6 @@
   var getCoordinates = window.mainPin.getCoordinates;
 
   var roomCapacityMap = {
-    '0': 'any',
     '1': ['1'],
     '2': ['1', '2'],
     '3': ['1', '2', '3'],
@@ -87,6 +86,8 @@
     adForm.reset();
     setInactiveMode();
     resetMainPinLocation();
+    addClassToElement(adForm, 'ad-form--disabled');
+    addClassToElement(map, 'map--faded');
     adFormAddress.value = getCoordinates(MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT_ACTIVE, mainPin.offsetLeft, mainPin.offsetTop);
     mapPins.forEach(function (mapPin) {
       mapPin.remove();
@@ -94,6 +95,16 @@
     if (card) {
       card.remove();
     }
+  };
+
+  var onSubmitSuccess = function () {
+    renderMessage(messageMap.success);
+    onFormReset();
+  };
+
+  var onFormSubmit = function (evt) {
+    evt.preventDefault();
+    onUpload(new FormData(adForm), onSubmitSuccess, renderMessage.bind(null, messageMap.error));
   };
 
   var addClassToElement = function (element, className) {
@@ -147,18 +158,6 @@
       onFormReset();
     }
   });
-
-  var onSubmitSuccess = function () {
-    renderMessage(messageMap.success);
-    onFormReset();
-    addClassToElement(adForm, 'ad-form--disabled');
-    addClassToElement(map, 'map--faded');
-  };
-
-  var onFormSubmit = function (evt) {
-    evt.preventDefault();
-    onUpload(new FormData(adForm), onSubmitSuccess, renderMessage.bind(null, messageMap.error));
-  };
 
   adForm.addEventListener('submit', onFormSubmit);
 
