@@ -1,10 +1,12 @@
 'use strict';
 (function () {
 
-  var URL = 'https://javascript.pages.academy/keksobooking/data';
-  var StatusCode = {
+  var LOAD_URL = 'https://javascript.pages.academy/keksobooking/data';
+  var UPLOAD_URL = 'https://javascript.pages.academy/keksobooking';
+  var statusCode = {
     OK: 200
   };
+
   var TIMEOUT_IN_MS = 10000;
 
   var onLoadError = function (errorMessage) {
@@ -19,15 +21,15 @@
     document.body.insertAdjacentElement('afterbegin', node);
   };
 
-  var onXHRload = function (onSuccess, onError) {
+  var onXHRload = function (url, method, onSuccess, onError, data) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === StatusCode.OK) {
+      if (xhr.status === statusCode.OK) {
         onSuccess(xhr.response);
       } else {
-        onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+        onError();
       }
     });
 
@@ -40,13 +42,27 @@
     });
 
     xhr.timeout = TIMEOUT_IN_MS;
-    xhr.open('GET', URL);
-    xhr.send();
+    xhr.open(method, url);
+
+    if (data) {
+      xhr.send(data);
+    } else {
+      xhr.send();
+    }
+  };
+
+  var load = function (onSuccess, onError) {
+    onXHRload(LOAD_URL, 'GET', onSuccess, onError);
+  };
+
+  var upload = function (data, onSuccess, onError) {
+    onXHRload(UPLOAD_URL, 'POST', onSuccess, onError, data);
   };
 
   window.load = {
     onLoadError: onLoadError,
-    onXHRload: onXHRload
+    load: load,
+    upload: upload
   };
 
 })();

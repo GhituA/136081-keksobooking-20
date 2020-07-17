@@ -13,7 +13,7 @@
   var adFormElements = adForm.children;
   var adFormAddress = adForm.querySelector('#address');
 
-  var onXHRload = window.load.onXHRload;
+  var onLoad = window.load.load;
   var renderPins = window.pin.render;
   var onLoadError = window.load.onLoadError;
   var onMainPinDrag = window.mainPin.drag;
@@ -54,7 +54,7 @@
     toggleFormElements(adFormElements, true);
     toggleFormElements(mapFilterElements, true);
     adFormAddress.value = getCoordinates(MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT_ACTIVE, mainPin.offsetLeft, mainPin.offsetTop);
-    onXHRload(renderPins, onLoadError);
+    onLoad(renderPins, onLoadError);
 
     mainPin.removeEventListener('mousedown', onMainPinMouseDown);
     mainPin.removeEventListener('keydown', onMainPinKeyDown);
@@ -62,5 +62,10 @@
   };
 
   setInactiveMode();
+
+  window.events = {
+    setInactiveMode: setInactiveMode,
+    toggleFormElements: toggleFormElements
+  };
 
 })();

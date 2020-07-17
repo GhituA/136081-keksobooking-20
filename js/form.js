@@ -4,6 +4,10 @@
   var MIN_TITLE_LENGTH = 30;
   var MAX_TITLE_LENGTH = 100;
   var MAX_PRICE = 1000000;
+  var MAIN_PIN_INACTIVE_X = 570;
+  var MAIN_PIN_INACTIVE_Y = 375;
+  var MAIN_PIN_WIDTH = 65;
+  var MAIN_PIN_HEIGHT_ACTIVE = 87;
 
   var roomField = document.querySelector('#room_number');
   var capacityField = document.querySelector('#capacity');
@@ -12,8 +16,16 @@
   var priceField = document.querySelector('#price');
   var timeinField = document.querySelector('#timein');
   var timeoutField = document.querySelector('#timeout');
+  var map = document.querySelector('.map');
+  var mainPin = map.querySelector('.map__pin--main');
+  var adForm = document.querySelector('.ad-form');
+  var resetButton = adForm.querySelector('.ad-form__reset');
+  var onUpload = window.load.upload;
+  var renderMessage = window.message.renderMessage;
+  var setInactiveMode = window.events.setInactiveMode;
+  var getCoordinates = window.mainPin.getCoordinates;
+
   var roomCapacityMap = {
-    '0': 'any',
     '1': ['1'],
     '2': ['1', '2'],
     '3': ['1', '2', '3'],
@@ -30,6 +42,10 @@
     flat: '1000',
     house: '5000',
     palace: '10000'
+  };
+  var messageMap = {
+    success: 'success',
+    error: 'error'
   };
 
   var checkCapacityValidity = function () {
@@ -55,6 +71,44 @@
     } else {
       priceField.setCustomValidity('');
     }
+  };
+
+  var resetMainPinLocation = function () {
+    mainPin.style.left = MAIN_PIN_INACTIVE_X + 'px';
+    mainPin.style.top = MAIN_PIN_INACTIVE_Y + 'px';
+  };
+
+  var onFormReset = function () {
+    var mapPins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
+    var card = map.querySelector('.map__card');
+    var adFormAddress = adForm.querySelector('#address');
+
+    adForm.reset();
+    setInactiveMode();
+    resetMainPinLocation();
+    addClassToElement(adForm, 'ad-form--disabled');
+    addClassToElement(map, 'map--faded');
+    adFormAddress.value = getCoordinates(MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT_ACTIVE, mainPin.offsetLeft, mainPin.offsetTop);
+    mapPins.forEach(function (mapPin) {
+      mapPin.remove();
+    });
+    if (card) {
+      card.remove();
+    }
+  };
+
+  var onSubmitSuccess = function () {
+    renderMessage(messageMap.success);
+    onFormReset();
+  };
+
+  var onFormSubmit = function (evt) {
+    evt.preventDefault();
+    onUpload(new FormData(adForm), onSubmitSuccess, renderMessage.bind(null, messageMap.error));
+  };
+
+  var addClassToElement = function (element, className) {
+    element.classList.add(className);
   };
 
   roomField.addEventListener('change', function (evt) {
@@ -97,5 +151,14 @@
   timeoutField.addEventListener('change', function (evt) {
     timeinField.value = evt.target.value;
   });
+
+  resetButton.addEventListener('click', onFormReset);
+  resetButton.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Enter') {
+      onFormReset();
+    }
+  });
+
+  adForm.addEventListener('submit', onFormSubmit);
 
 })();
