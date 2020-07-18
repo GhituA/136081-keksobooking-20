@@ -25,18 +25,25 @@
   var setInactiveMode = window.events.setInactiveMode;
   var getCoordinates = window.mainPin.getCoordinates;
 
-  var roomCapacityMap = {
-    '1': ['1'],
-    '2': ['1', '2'],
-    '3': ['1', '2', '3'],
-    '100': ['0']
+  var capacityMap = {
+    '1': {
+      guests: ['1'],
+      message: 'В 1 комнату можно поселить только 1 гостя'
+    },
+    '2': {
+      guests: ['1', '2'],
+      message: 'В 2 комнаты можно поселить максимум 2 гостей'
+    },
+    '3': {
+      guests: ['1', '2', '3'],
+      message: 'В 3 комнаты можно поселить максимум 3 гостей'
+    },
+    '100': {
+      guests: ['0'],
+      message: 'В 100 комнат нельзя заселять гостей'
+    }
   };
-  var errorMap = {
-    '1': 'В 1 комнату можно поселить только 1 гостя',
-    '2': 'В 2 комнаты можно поселить максимум 2 гостей',
-    '3': 'В 3 комнаты можно поселить максимум 3 гостей',
-    '100': 'В 100 комнат нельзя заселять гостей'
-  };
+
   var typeMap = {
     bungalo: '0',
     flat: '1000',
@@ -52,8 +59,8 @@
     var guests = capacityField.value;
     var rooms = roomField.value;
 
-    if (!roomCapacityMap[rooms].includes(guests)) {
-      roomField.setCustomValidity(errorMap[rooms]);
+    if (!capacityMap[rooms].guests.includes(guests)) {
+      roomField.setCustomValidity(capacityMap[rooms].message);
     } else {
       roomField.setCustomValidity('');
     }
@@ -86,8 +93,6 @@
     adForm.reset();
     setInactiveMode();
     resetMainPinLocation();
-    addClassToElement(adForm, 'ad-form--disabled');
-    addClassToElement(map, 'map--faded');
     adFormAddress.value = getCoordinates(MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT_ACTIVE, mainPin.offsetLeft, mainPin.offsetTop);
     mapPins.forEach(function (mapPin) {
       mapPin.remove();
@@ -97,24 +102,14 @@
     }
   };
 
-  var onSubmitSuccess = function () {
-    renderMessage(messageMap.success);
-    onFormReset();
-  };
-
-  var onFormSubmit = function (evt) {
-    evt.preventDefault();
-    onUpload(new FormData(adForm), onSubmitSuccess, renderMessage.bind(null, messageMap.error));
-  };
-
   var addClassToElement = function (element, className) {
     element.classList.add(className);
   };
 
   roomField.addEventListener('change', function (evt) {
-    var roomsCount = evt.target.value;
+    var rooms = evt.target.value;
     for (var j = 0; j < capacityField.options.length; j++) {
-      capacityField.options[j].disabled = !roomCapacityMap[roomsCount].includes(capacityField.options[j].value);
+      capacityField.options[j].disabled = !capacityMap[rooms].guests.includes(capacityField.options[j].value);
     }
     checkCapacityValidity();
   });
@@ -158,6 +153,18 @@
       onFormReset();
     }
   });
+
+  var onSubmitSuccess = function () {
+    renderMessage(messageMap.success);
+    onFormReset();
+    addClassToElement(adForm, 'ad-form--disabled');
+    addClassToElement(map, 'map--faded');
+  };
+
+  var onFormSubmit = function (evt) {
+    evt.preventDefault();
+    onUpload(new FormData(adForm), onSubmitSuccess, renderMessage.bind(null, messageMap.error));
+  };
 
   adForm.addEventListener('submit', onFormSubmit);
 
