@@ -60,7 +60,7 @@
   };
 
   window.load = {
-    onLoadError: onLoadError,
+    onError: onLoadError,
     load: load,
     upload: upload
   };

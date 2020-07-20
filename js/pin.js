@@ -2,8 +2,10 @@
 
 (function () {
 
+  var NUMBER_OF_OFFERS = 5;
   var renderCard = window.card.render;
   var onEscPress = window.card.onEscPress;
+  var shuffleArray = window.util.shuffleArray;
 
   var onPinClick = function (element, input) {
     var activePin = document.querySelector('.map__pin--active');
@@ -46,18 +48,31 @@
     return pinElement;
   };
 
+  var removePins = function () {
+    var map = document.querySelector('.map');
+    var mapPins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
+    mapPins.forEach(function (mapPin) {
+      mapPin.remove();
+    });
+  };
+
+
   var renderPins = function (elements) {
     var pinList = document.querySelector('.map__pins');
     var pinFragment = document.createDocumentFragment();
 
-    elements.forEach(function (element) {
+    var shuffledElements = shuffleArray(elements);
+    shuffledElements = shuffledElements.slice(0, NUMBER_OF_OFFERS);
+
+    shuffledElements.forEach(function (element) {
       pinFragment.appendChild(getPinElement(element));
     });
     pinList.appendChild(pinFragment);
   };
 
   window.pin = {
-    render: renderPins
+    render: renderPins,
+    remove: removePins
   };
 
 })();

@@ -9,11 +9,17 @@
   var mainPin = document.querySelector('.map__pin--main');
   var mapWidth = document.querySelector('.map').clientWidth;
   var adForm = document.querySelector('.ad-form');
-  var adFormAddress = adForm.querySelector('#address');
+
 
   var getCoordinates = function (pinWidth, pinHeight, left, top) {
     var coordinates = Math.round(left + pinWidth / 2) + ', ' + Math.round(top + pinHeight);
     return coordinates;
+  };
+
+  var setMainPinCoordinates = function (pinHeight) {
+    var adFormAddress = adForm.querySelector('#address');
+    adFormAddress.readOnly = true;
+    adFormAddress.value = getCoordinates(MAIN_PIN_WIDTH, pinHeight, mainPin.offsetLeft, mainPin.offsetTop);
   };
 
   var onMainPinDrag = function (evt) {
@@ -42,7 +48,7 @@
         mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
       }
 
-      adFormAddress.value = getCoordinates(MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT_ACTIVE, mainPin.offsetLeft, mainPin.offsetTop);
+      setMainPinCoordinates(MAIN_PIN_HEIGHT_ACTIVE);
     };
 
     var onMouseUp = function (upEvt) {
@@ -58,7 +64,8 @@
 
   window.mainPin = {
     drag: onMainPinDrag,
-    getCoordinates: getCoordinates
+    getCoordinates: getCoordinates,
+    setMainPinCoordinates: setMainPinCoordinates,
   };
 
 })();

@@ -3,10 +3,10 @@
 (function () {
 
   var OFFER_TYPES_MAP = {
+    'palace': 'Дворец',
     'flat': 'Квартира',
-    'bungalo': 'Бунгало',
-    'palace': 'Дом',
-    'house': 'Дворец'
+    'house': 'Дом',
+    'bungalo': 'Бунгало'
   };
   var OFFER_FEATURES_MAP = {
     'wifi': 'WiFi',
@@ -131,6 +131,14 @@
     return cardElement;
   };
 
+  var removeCard = function () {
+    var map = document.querySelector('.map');
+    var card = map.querySelector('.map__card');
+    if (card) {
+      card.remove();
+    }
+  };
+
   var renderCard = function (elements) {
     var map = document.querySelector('.map');
     var cardFragment = document.createDocumentFragment();
@@ -142,7 +150,8 @@
 
   window.card = {
     render: renderCard,
-    onEscPress: onEscPress
+    onEscPress: onEscPress,
+    remove: removeCard
   };
 
 })();
