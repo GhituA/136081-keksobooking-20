@@ -2,7 +2,7 @@
 
 (function () {
 
-  var NUMBER_OF_OFFERS = 5;
+  var MAX_NUMBER_OF_OFFERS = 5;
   var renderCard = window.card.render;
   var onEscPress = window.card.onEscPress;
   var shuffleArray = window.util.shuffleArray;
@@ -62,7 +62,7 @@
     var pinFragment = document.createDocumentFragment();
 
     var shuffledElements = shuffleArray(elements);
-    shuffledElements = shuffledElements.slice(0, NUMBER_OF_OFFERS);
+    shuffledElements = shuffledElements.slice(0, MAX_NUMBER_OF_OFFERS);
 
     shuffledElements.forEach(function (element) {
       pinFragment.appendChild(getPinElement(element));

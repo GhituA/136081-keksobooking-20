@@ -70,7 +70,6 @@
     adForm.classList.remove('ad-form--disabled');
 
     toggleArrayElements(adFormElements, true);
-    setFilterActive();
     setMainPinCoordinates(MAIN_PIN_HEIGHT_ACTIVE);
     onLoad(onLoadSuccess, onLoadError);
 
