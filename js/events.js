@@ -1,28 +1,30 @@
 'use strict';
 
 (function () {
-  var MAIN_PIN_WIDTH = 65;
   var MAIN_PIN_HEIGHT = 65;
   var MAIN_PIN_HEIGHT_ACTIVE = 87;
+  var MAIN_PIN_INACTIVE_X = 570;
+  var MAIN_PIN_INACTIVE_Y = 375;
 
   var map = document.querySelector('.map');
-  var mapFilter = document.querySelector('.map__filters');
-  var mapFilterElements = mapFilter.children;
-  var mainPin = document.querySelector('.map__pin--main');
   var adForm = document.querySelector('.ad-form');
   var adFormElements = adForm.children;
-  var adFormAddress = adForm.querySelector('#address');
+  var mainPin = map.querySelector('.map__pin--main');
 
   var onLoad = window.load.load;
   var renderPins = window.pin.render;
-  var onLoadError = window.load.onLoadError;
+  var removePins = window.pin.remove;
+  var removeCard = window.card.remove;
+  var onLoadError = window.load.onError;
   var onMainPinDrag = window.mainPin.drag;
-  var getCoordinates = window.mainPin.getCoordinates;
+  var setMainPinCoordinates = window.mainPin.setMainPinCoordinates;
+  var setFilterInactive = window.filter.deactivate;
+  var setFilterActive = window.filter.activate;
+  var toggleArrayElements = window.util.toggleArrayElements;
 
-  var toggleFormElements = function (elements, active) {
-    Array.from(elements).forEach(function (element) {
-      element.disabled = !active;
-    });
+  var onLoadSuccess = function (elements) {
+    renderPins(elements);
+    setFilterActive(elements);
   };
 
   var onMainPinMouseDown = function (evt) {
@@ -37,11 +39,27 @@
     }
   };
 
+  var resetMainPinLocation = function () {
+    mainPin.style.left = MAIN_PIN_INACTIVE_X + 'px';
+    mainPin.style.top = MAIN_PIN_INACTIVE_Y + 'px';
+  };
+
+
+  var addClassToElement = function (element, className) {
+    element.classList.add(className);
+  };
+
+
   var setInactiveMode = function () {
-    toggleFormElements(adFormElements);
-    toggleFormElements(mapFilterElements);
-    adFormAddress.readOnly = true;
-    adFormAddress.value = getCoordinates(MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT / 2, mainPin.offsetLeft, mainPin.offsetTop);
+    addClassToElement(adForm, 'ad-form--disabled');
+    addClassToElement(map, 'map--faded');
+
+    toggleArrayElements(adFormElements);
+    setFilterInactive();
+    resetMainPinLocation();
+    setMainPinCoordinates(MAIN_PIN_HEIGHT / 2);
+    removePins();
+    removeCard();
 
     mainPin.addEventListener('mousedown', onMainPinMouseDown);
     mainPin.addEventListener('keydown', onMainPinKeyDown);
@@ -51,10 +69,9 @@
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
 
-    toggleFormElements(adFormElements, true);
-    toggleFormElements(mapFilterElements, true);
-    adFormAddress.value = getCoordinates(MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT_ACTIVE, mainPin.offsetLeft, mainPin.offsetTop);
-    onLoad(renderPins, onLoadError);
+    toggleArrayElements(adFormElements, true);
+    setMainPinCoordinates(MAIN_PIN_HEIGHT_ACTIVE);
+    onLoad(onLoadSuccess, onLoadError);
 
     mainPin.removeEventListener('mousedown', onMainPinMouseDown);
     mainPin.removeEventListener('keydown', onMainPinKeyDown);
@@ -65,7 +82,7 @@
 
   window.events = {
     setInactiveMode: setInactiveMode,
-    toggleFormElements: toggleFormElements
+    toggleArrayElements: toggleArrayElements
   };
 
 })();

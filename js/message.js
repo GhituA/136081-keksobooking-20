@@ -45,6 +45,6 @@
   };
 
   window.message = {
-    renderMessage: renderMessage
+    render: renderMessage
   };
 })();
