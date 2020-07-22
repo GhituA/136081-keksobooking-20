@@ -20,6 +20,7 @@
   var roomField = adForm.querySelector('#room_number');
   var capacityField = adForm.querySelector('#capacity');
   var imagesField = adForm.querySelector('#images');
+  var imagePreview = adForm.querySelector('.ad-form__photo');
 
   var onUpload = window.load.upload;
   var renderMessage = window.message.render;
@@ -83,6 +84,7 @@
 
   var onFormReset = function () {
     adForm.reset();
+    resetImagePreviews();
     setInactiveMode();
     setMainPinCoordinates(MAIN_PIN_HEIGHT_ACTIVE);
   };
@@ -96,6 +98,26 @@
     evt.preventDefault();
     onUpload(new FormData(adForm), onSubmitSuccess, renderMessage.bind(renderMessage, messageMap.error));
   };
+
+  var renderImage = function () {
+    var image = document.createElement('img');
+    image.style.width = '70px';
+    image.style.height = '70px';
+
+    onFileChange(imagesField, image);
+
+    imagePreview.appendChild(image);
+  };
+
+  var resetImagePreviews = function () {
+    var imagesPreviews = imagePreview.children;
+    avatarPreview.src = 'img/muffin-grey.svg';
+
+    Array.from(imagesPreviews).forEach(function (element) {
+      element.remove();
+    })
+
+  }
 
   var onFileChange = function (inputField, previewField) {
     var file = inputField.files[0];
@@ -114,18 +136,6 @@
 
       imgReader.readAsDataURL(file);
     }
-  };
-
-  var renderImage = function () {
-    var imagePreview = adForm.querySelector('.ad-form__photo');
-    var image = document.createElement('img');
-    image.className = 'ad-form__photo--preview';
-    image.style.width = '70px';
-    image.style.height = '70px';
-
-    onFileChange(imagesField, image);
-
-    imagePreview.appendChild(image);
   };
 
   avatarField.addEventListener('change', onFileChange.bind(onFileChange, avatarField, avatarPreview));
