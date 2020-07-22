@@ -6,6 +6,7 @@
   var MAX_TITLE_LENGTH = 100;
   var MAX_PRICE = 1000000;
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var IMG_DEFAULT_PREVIEW = 'img/muffin-grey.svg';
 
   var adForm = document.querySelector('.ad-form');
   var resetButton = adForm.querySelector('.ad-form__reset');
@@ -99,27 +100,13 @@
     onUpload(new FormData(adForm), onSubmitSuccess, renderMessage.bind(renderMessage, messageMap.error));
   };
 
-  var renderImage = function () {
-    var image = document.createElement('img');
-    image.style.width = '70px';
-    image.style.height = '70px';
-
-    onFileChange(imagesField, image);
-
-    imagePreview.appendChild(image);
-  };
-
   var resetImagePreviews = function () {
-    var imagesPreviews = imagePreview.children;
-    avatarPreview.src = 'img/muffin-grey.svg';
+    imagePreview.removeAttribute('style');
 
-    Array.from(imagesPreviews).forEach(function (element) {
-      element.remove();
-    });
-
+    avatarPreview.src = IMG_DEFAULT_PREVIEW;
   };
 
-  var onFileChange = function (inputField, previewField) {
+  var onFileChange = function (inputField, cb) {
     var file = inputField.files[0];
     var fileName = file.name.toLowerCase();
 
@@ -131,14 +118,23 @@
       var imgReader = new FileReader();
 
       imgReader.addEventListener('load', function () {
-        previewField.src = imgReader.result;
+        cb(imgReader.result);
       });
 
       imgReader.readAsDataURL(file);
     }
   };
 
-  avatarField.addEventListener('change', onFileChange.bind(onFileChange, avatarField, avatarPreview));
+  var getAvatarPreview = function (value) {
+    avatarPreview.src = value;
+  };
+
+  var getPhotoPreview = function (value) {
+    imagePreview.style.backgroundImage = 'url(' + value + ')';
+    imagePreview.style.backgroundSize = 'cover';
+  };
+
+  avatarField.addEventListener('change', onFileChange.bind(onFileChange, avatarField, getAvatarPreview));
 
   titleField.addEventListener('input', function (evt) {
     var valueLength = evt.target.value.length;
@@ -181,7 +177,7 @@
     checkCapacityValidity();
   });
 
-  imagesField.addEventListener('change', renderImage);
+  imagesField.addEventListener('change', onFileChange.bind(onFileChange, imagesField, getPhotoPreview));
 
   resetButton.addEventListener('click', onFormReset);
   resetButton.addEventListener('keydown', function (evt) {
