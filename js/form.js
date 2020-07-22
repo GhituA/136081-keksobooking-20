@@ -114,7 +114,7 @@
 
       imgReader.readAsDataURL(file);
     }
-  }
+  };
 
   var renderImage = function () {
     var imagePreview = adForm.querySelector('.ad-form__photo');
