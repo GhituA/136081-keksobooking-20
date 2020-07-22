@@ -5,16 +5,23 @@
   var MIN_TITLE_LENGTH = 30;
   var MAX_TITLE_LENGTH = 100;
   var MAX_PRICE = 1000000;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var IMG_DEFAULT_PREVIEW = 'img/muffin-grey.svg';
 
   var adForm = document.querySelector('.ad-form');
   var resetButton = adForm.querySelector('.ad-form__reset');
-  var roomField = adForm.querySelector('#room_number');
-  var capacityField = adForm.querySelector('#capacity');
+
+  var avatarField = adForm.querySelector('#avatar');
+  var avatarPreview = adForm.querySelector('.ad-form-header__preview img');
   var titleField = adForm.querySelector('#title');
   var typeField = adForm.querySelector('#type');
   var priceField = adForm.querySelector('#price');
   var timeinField = adForm.querySelector('#timein');
   var timeoutField = adForm.querySelector('#timeout');
+  var roomField = adForm.querySelector('#room_number');
+  var capacityField = adForm.querySelector('#capacity');
+  var imagesField = adForm.querySelector('#images');
+  var imagePreview = adForm.querySelector('.ad-form__photo');
 
   var onUpload = window.load.upload;
   var renderMessage = window.message.render;
@@ -78,10 +85,10 @@
 
   var onFormReset = function () {
     adForm.reset();
+    resetImagePreviews();
     setInactiveMode();
     setMainPinCoordinates(MAIN_PIN_HEIGHT_ACTIVE);
   };
-
 
   var onSubmitSuccess = function () {
     renderMessage(messageMap.success);
@@ -93,17 +100,41 @@
     onUpload(new FormData(adForm), onSubmitSuccess, renderMessage.bind(renderMessage, messageMap.error));
   };
 
-  roomField.addEventListener('change', function (evt) {
-    var rooms = evt.target.value;
-    for (var j = 0; j < capacityField.options.length; j++) {
-      capacityField.options[j].disabled = !capacityMap[rooms].guests.includes(capacityField.options[j].value);
-    }
-    checkCapacityValidity();
-  });
+  var resetImagePreviews = function () {
+    imagePreview.removeAttribute('style');
 
-  capacityField.addEventListener('change', function () {
-    checkCapacityValidity();
-  });
+    avatarPreview.src = IMG_DEFAULT_PREVIEW;
+  };
+
+  var onFileChange = function (inputField, cb) {
+    var file = inputField.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var imgReader = new FileReader();
+
+      imgReader.addEventListener('load', function () {
+        cb(imgReader.result);
+      });
+
+      imgReader.readAsDataURL(file);
+    }
+  };
+
+  var getAvatarPreview = function (value) {
+    avatarPreview.src = value;
+  };
+
+  var getPhotoPreview = function (value) {
+    imagePreview.style.backgroundImage = 'url(' + value + ')';
+    imagePreview.style.backgroundSize = 'cover';
+  };
+
+  avatarField.addEventListener('change', onFileChange.bind(onFileChange, avatarField, getAvatarPreview));
 
   titleField.addEventListener('input', function (evt) {
     var valueLength = evt.target.value.length;
@@ -133,6 +164,20 @@
   timeoutField.addEventListener('change', function (evt) {
     timeinField.value = evt.target.value;
   });
+
+  roomField.addEventListener('change', function (evt) {
+    var rooms = evt.target.value;
+    for (var j = 0; j < capacityField.options.length; j++) {
+      capacityField.options[j].disabled = !capacityMap[rooms].guests.includes(capacityField.options[j].value);
+    }
+    checkCapacityValidity();
+  });
+
+  capacityField.addEventListener('change', function () {
+    checkCapacityValidity();
+  });
+
+  imagesField.addEventListener('change', onFileChange.bind(onFileChange, imagesField, getPhotoPreview));
 
   resetButton.addEventListener('click', onFormReset);
   resetButton.addEventListener('keydown', function (evt) {
