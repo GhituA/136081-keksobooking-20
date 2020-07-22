@@ -115,9 +115,9 @@
 
     Array.from(imagesPreviews).forEach(function (element) {
       element.remove();
-    })
+    });
 
-  }
+  };
 
   var onFileChange = function (inputField, previewField) {
     var file = inputField.files[0];
