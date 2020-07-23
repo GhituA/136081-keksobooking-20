@@ -1,15 +1,9 @@
 'use strict';
 
 (function () {
-  var MAIN_PIN_HEIGHT = 65;
-  var MAIN_PIN_HEIGHT_ACTIVE = 87;
+
   var MAIN_PIN_INACTIVE_X = 570;
   var MAIN_PIN_INACTIVE_Y = 375;
-
-  var MessageMap = {
-    success: 'success',
-    error: 'error'
-  };
 
   var map = document.querySelector('.map');
   var mainPin = map.querySelector('.map__pin--main');
@@ -39,13 +33,13 @@
   };
 
   var onMainPinMouseDown = function (evt) {
-    if (evt.button === 0) {
+    if (evt.button === window.util.mouseLeft) {
       setActiveMode();
     }
   };
 
   var onMainPinKeyDown = function (evt) {
-    if (evt.key === 'Enter') {
+    if (evt.key === window.util.enterKey) {
       setActiveMode();
     }
   };
@@ -59,24 +53,24 @@
     adForm.reset();
     resetImagePreviews();
     setInactiveMode();
-    setMainPinCoordinates(MAIN_PIN_HEIGHT_ACTIVE);
+    setMainPinCoordinates(window.util.mainPinHeightActive);
   };
 
   var onSubmitSuccess = function () {
-    renderMessage(MessageMap.success);
+    renderMessage(window.util.messageSuccess);
     onFormReset();
   };
 
   var onFormSubmit = function (evt) {
     evt.preventDefault();
-    onUpload(new FormData(adForm), onSubmitSuccess, renderMessage.bind(renderMessage, MessageMap.error));
+    onUpload(new FormData(adForm), onSubmitSuccess, renderMessage.bind(renderMessage, window.util.messageError));
   };
 
   var setInactiveMode = function () {
     addClassToElement(map, 'map--faded');
     setFilterInactive();
     resetMainPinLocation();
-    setMainPinCoordinates(MAIN_PIN_HEIGHT / 2);
+    setMainPinCoordinates(window.util.mainPinHeight / 2);
     removePins();
     removeCard();
     setFromInactive();
@@ -91,7 +85,7 @@
     setFormActive();
     removeClassFromElement(map, 'map--faded');
 
-    setMainPinCoordinates(MAIN_PIN_HEIGHT_ACTIVE);
+    setMainPinCoordinates(window.util.mainPinHeightActive);
     onLoad(onLoadSuccess, onLoadError);
 
 

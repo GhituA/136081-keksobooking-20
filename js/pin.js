@@ -2,8 +2,6 @@
 
 (function () {
 
-  var MAX_NUMBER_OF_OFFERS = 5;
-
   var renderCard = window.card.render;
   var onEscPress = window.card.onEscPress;
   var shuffleArray = window.util.shuffleArray;
@@ -38,7 +36,7 @@
     });
 
     pinElement.addEventListener('keydown', function (evt) {
-      if (evt.key === 'Enter') {
+      if (evt.key === window.util.enterKey) {
         onPinClick(pinElement, input);
       }
     });
@@ -65,7 +63,7 @@
 
     var checkedOffers = elements.filter(checkElementsOffer);
     var shuffledElements = shuffleArray(checkedOffers);
-    shuffledElements = shuffledElements.slice(0, MAX_NUMBER_OF_OFFERS);
+    shuffledElements = shuffledElements.slice(0, window.util.offersMaxNumber);
 
     shuffledElements.forEach(function (element) {
       pinFragment.appendChild(getPinElement(element));

@@ -2,6 +2,8 @@
 
 (function () {
 
+  var CHECKIN_UNDEFINED = '0:00';
+
   var OFFER_TYPES_MAP = {
     'palace': 'Дворец',
     'flat': 'Квартира',
@@ -18,11 +20,11 @@
   };
 
   var defineArray = function (arrayInput, arrayMap) {
-    var element = [];
+    var elements = [];
     arrayInput.forEach(function (arrayElement) {
-      element.push(arrayMap[arrayElement]);
+      elements.push(arrayMap[arrayElement]);
     });
-    return element.join(', ');
+    return elements.join(', ');
   };
 
   var defineRooms = function (number, words) {
@@ -47,23 +49,21 @@
     var DEFINED_ROOMS = ['комната', 'комнаты', 'комнат'];
     var DEFINED_GUESTS = ['гостя', 'гостей'];
 
-    if (!rooms || !guests) {
-      return false;
+    if (rooms || guests) {
+      var capacity = rooms + ' ' + defineRooms(rooms, DEFINED_ROOMS) + ' для ' + guests + ' ' + defineGuests(guests, DEFINED_GUESTS);
     }
-    var capacity = rooms + ' ' + defineRooms(rooms, DEFINED_ROOMS) + ' для ' + guests + ' ' + defineGuests(guests, DEFINED_GUESTS);
     return capacity;
   };
 
   var defineTimes = function (checkin, checkout) {
-    if (checkin === '0:00' || checkout === '0:00') {
-      return false;
+    if (checkin !== CHECKIN_UNDEFINED || checkout !== CHECKIN_UNDEFINED) {
+      var times = 'Заезд после ' + checkin + ', выезд до ' + checkout;
     }
-    var times = 'Заезд после ' + checkin + ', выезд до ' + checkout;
     return times;
   };
 
   var onEscPress = function (evt) {
-    if (evt.key === 'Escape') {
+    if (evt.key === window.util.escKey) {
       onCardClose();
     }
   };
@@ -89,7 +89,7 @@
   };
 
   var renderPhotos = function (photosBlock, photosElement, inputPhotos) {
-    if (inputPhotos.length === 0) {
+    if (!inputPhotos.length) {
       photosBlock.remove();
     }
     photosBlock.innerHTML = '';

@@ -2,13 +2,10 @@
 
 (function () {
 
-  var offers = [];
   var OFFER_NUMBER = 8;
   var OFFER_PRICE_MAX = 1000000;
   var OFFER_ROOMS_MAX = 100;
   var OFFER_GUESTS_MAX = 3;
-  var PIN_LOCATIONY_MIN = 130;
-  var PIN_LOCATIONY_MAX = 630;
 
   var OFFER_TYPES = ['palace', 'flat', 'house', 'bungalo'];
   var OFFER_CHECKINS = ['12:00', '13:00', '14:00'];
@@ -19,10 +16,12 @@
   var getRandomElement = window.util.getRandomElement;
   var getRandomNumber = window.util.getRandomNumber;
 
+  var offers = [];
+
   for (var i = 0; i < OFFER_NUMBER; i++) {
     var mapWidth = document.querySelector('.map').clientWidth;
     var pinLocationX = getRandomNumber(1, mapWidth);
-    var pinLocationY = getRandomNumber(PIN_LOCATIONY_MIN, PIN_LOCATIONY_MAX);
+    var pinLocationY = getRandomNumber(window.util.pinLocationYMin, window.util.pinLocationYMax);
 
     offers.push({
       author: {

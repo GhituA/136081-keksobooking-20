@@ -4,7 +4,13 @@
 
   var PRICE_MARK_LOW = 10000;
   var PRICE_MARK_MIDDLE = 50000;
-  var MAX_NUMBER_OF_OFFERS = 5;
+  var FILTER_VALUE_DEFAULT = 'any';
+
+  var PriceFilter = {
+    LOW: 'low',
+    MIDDLE: 'middle',
+    HIGH: 'high'
+  };
 
   var mapFilter = document.querySelector('.map__filters');
   var mapFilterElements = mapFilter.children;
@@ -37,28 +43,27 @@
 
   var getFilteredAd = function (value, data, element) {
     if (isANumber(value) === element.offer[data]) {
-      return element;
-    } else {
-      return false;
+      var filteredAd = element;
     }
+    return filteredAd;
   };
 
   var filterByPrice = function (value, data, element) {
-    if (value === 'low' && element.offer[data] < PRICE_MARK_LOW) {
-      return element;
-    } else if (value === 'middle' && element.offer[data] > PRICE_MARK_LOW && element.offer.price < PRICE_MARK_MIDDLE) {
-      return element;
-    } else if (value === 'high' && element.offer[data] > PRICE_MARK_MIDDLE) {
-      return element;
-    } else {
-      return false;
+    var filteredElement;
+    if (value === PriceFilter.LOW && element.offer[data] < PRICE_MARK_LOW) {
+      filteredElement = element;
+    } else if (value === PriceFilter.MIDDLE && element.offer[data] > PRICE_MARK_LOW && element.offer.price < PRICE_MARK_MIDDLE) {
+      filteredElement = element;
+    } else if (value === PriceFilter.HIGH && element.offer[data] > PRICE_MARK_MIDDLE) {
+      filteredElement = element;
     }
+    return filteredElement;
   };
 
   var getCheckedFeatures = function (elements) {
     var checkedFeatures = [];
     Array.from(elements).forEach(function (element) {
-      if (element.checked === true) {
+      if (element.checked) {
         checkedFeatures.push(element.value);
       }
     });
@@ -67,7 +72,7 @@
 
   var filterByFeatures = function (value, data, element) {
     var filterElement = element;
-    if (value.length === 0) {
+    if (!value.length) {
       return element;
     } else {
       for (var i = 0; i < value.length; i++) {
@@ -84,8 +89,8 @@
 
   var getFilteredAds = function (filterFunction, value, data, elements) {
     var filteredAds = [];
-    for (var i = 0; i < elements.length && filteredAds.length < MAX_NUMBER_OF_OFFERS; i++) {
-      if (value === 'any') {
+    for (var i = 0; i < elements.length && filteredAds.length < window.util.offersMaxNumber; i++) {
+      if (value === FILTER_VALUE_DEFAULT) {
         return elements;
       } else if (filterFunction(value, data, elements[i])) {
         filteredAds.push(elements[i]);

@@ -2,6 +2,21 @@
 
 (function () {
 
+  var EVT_KEY_ESCAPE = 'Escape';
+  var EVT_KEY_ENTER = 'Enter';
+  var EVT_BUTTON_LEFT = 0;
+  var MAX_NUMBER_OF_OFFERS = 5;
+  var PIN_LOCATIONY_MIN = 130;
+  var PIN_LOCATIONY_MAX = 630;
+  var MAIN_PIN_WIDTH = 65;
+  var MAIN_PIN_HEIGHT = 65;
+  var MAIN_PIN_HEIGHT_ACTIVE = 87;
+
+  var MessageMap = {
+    SUCCESS: 'success',
+    ERROR: 'error'
+  };
+
   var shuffleArray = function (elements) {
     var j;
     var temp;
@@ -45,7 +60,18 @@
     addClassToElement: addClassToElement,
     removeClassFromElement: removeClassFromElement,
     getRandomNumber: getRandomNumber,
-    getRandomElement: getRandomElement
+    getRandomElement: getRandomElement,
+    escKey: EVT_KEY_ESCAPE,
+    enterKey: EVT_KEY_ENTER,
+    mouseLeft: EVT_BUTTON_LEFT,
+    offersMaxNumber: MAX_NUMBER_OF_OFFERS,
+    pinLocationYMin: PIN_LOCATIONY_MIN,
+    pinLocationYMax: PIN_LOCATIONY_MAX,
+    mainPinWidth: MAIN_PIN_WIDTH,
+    mainPinHeight: MAIN_PIN_HEIGHT,
+    mainPinHeightActive: MAIN_PIN_HEIGHT_ACTIVE,
+    messageError: MessageMap.ERROR,
+    messageSuccess: MessageMap.SUCCESS
   };
 
 })();

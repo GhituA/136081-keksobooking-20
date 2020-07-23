@@ -2,10 +2,10 @@
 
 (function () {
 
-  var MAIN_PIN_WIDTH = 65;
-  var MAIN_PIN_HEIGHT_ACTIVE = 87;
-  var PIN_LOCATIONY_MIN = 130;
-  var PIN_LOCATIONY_MAX = 630;
+  var MAIN_PIN_WIDTH = window.util.mainPinWidth;
+  var MAIN_PIN_HEIGHT_ACTIVE = window.util.mainPinHeightActive;
+  var PIN_LOCATIONY_MIN = window.util.pinLocationYMin;
+  var PIN_LOCATIONY_MAX = window.util.pinLocationYMax;
 
   var mainPin = document.querySelector('.map__pin--main');
   var mapWidth = document.querySelector('.map').clientWidth;

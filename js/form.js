@@ -150,7 +150,7 @@
 
   var onTitleInput = function (evt) {
     var valueLength = evt.target.value.length;
-    if (valueLength === 0) {
+    if (!valueLength) {
       evt.target.setCustomValidity('Это поле обязательно для заполнения');
       setRedBorder(evt.target);
     } else if (valueLength < MIN_TITLE_LENGTH) {
