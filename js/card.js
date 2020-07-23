@@ -64,7 +64,6 @@
 
   var onEscPress = function (evt) {
     if (evt.key === 'Escape') {
-      evt.preventDefault();
       onCardClose();
     }
   };
@@ -98,7 +97,6 @@
 
     inputPhotos.forEach(function (inputPhoto) {
       var photoElement = photosElement.cloneNode(true);
-
       photoElement.src = inputPhoto;
       cardPhotofragment.appendChild(photoElement);
     });

@@ -3,11 +3,10 @@
 
   var LOAD_URL = 'https://javascript.pages.academy/keksobooking/data';
   var UPLOAD_URL = 'https://javascript.pages.academy/keksobooking';
+  var TIMEOUT_IN_MS = 10000;
   var statusCode = {
     OK: 200
   };
-
-  var TIMEOUT_IN_MS = 10000;
 
   var onLoadError = function (errorMessage) {
     var node = document.createElement('div');

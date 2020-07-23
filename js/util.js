@@ -21,9 +21,31 @@
     });
   };
 
+  var addClassToElement = function (element, className) {
+    element.classList.add(className);
+  };
+
+  var removeClassFromElement = function (element, className) {
+    element.classList.remove(className);
+  };
+
+  var getRandomNumber = function (min, max) {
+    var randomNumber = Math.round(Math.random() * (max - min) + min);
+    return randomNumber;
+  };
+
+  var getRandomElement = function (elements) {
+    var randomElement = elements[Math.floor(Math.random() * elements.length)];
+    return randomElement;
+  };
+
   window.util = {
     shuffleArray: shuffleArray,
-    toggleArrayElements: toggleArrayElements
+    toggleArrayElements: toggleArrayElements,
+    addClassToElement: addClassToElement,
+    removeClassFromElement: removeClassFromElement,
+    getRandomNumber: getRandomNumber,
+    getRandomElement: getRandomElement
   };
 
 })();

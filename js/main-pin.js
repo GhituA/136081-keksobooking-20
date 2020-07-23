@@ -6,10 +6,10 @@
   var MAIN_PIN_HEIGHT_ACTIVE = 87;
   var PIN_LOCATIONY_MIN = 130;
   var PIN_LOCATIONY_MAX = 630;
+
   var mainPin = document.querySelector('.map__pin--main');
   var mapWidth = document.querySelector('.map').clientWidth;
   var adForm = document.querySelector('.ad-form');
-
 
   var getCoordinates = function (pinWidth, pinHeight, left, top) {
     var coordinates = Math.round(left + pinWidth / 2) + ', ' + Math.round(top + pinHeight);
@@ -65,7 +65,7 @@
   window.mainPin = {
     drag: onMainPinDrag,
     getCoordinates: getCoordinates,
-    setMainPinCoordinates: setMainPinCoordinates,
+    setCoordinates: setMainPinCoordinates,
   };
 
 })();

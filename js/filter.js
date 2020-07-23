@@ -5,6 +5,7 @@
   var PRICE_MARK_LOW = 10000;
   var PRICE_MARK_MIDDLE = 50000;
   var MAX_NUMBER_OF_OFFERS = 5;
+
   var mapFilter = document.querySelector('.map__filters');
   var mapFilterElements = mapFilter.children;
 
@@ -13,7 +14,6 @@
   var roomsFilter = mapFilter.querySelector('#housing-rooms');
   var guestsFilter = mapFilter.querySelector('#housing-guests');
   var featuresFilters = mapFilter.querySelectorAll('.map__checkbox');
-
 
   var toggleArrayElements = window.util.toggleArrayElements;
   var removePins = window.pin.remove;
@@ -94,7 +94,7 @@
     return filteredAds;
   };
 
-  var renderFilteredPins = debounce(function () {
+  var onFilterChange = debounce(function () {
 
     var typeFilterValue = typeFilter.value;
     var priceFilterValue = priceFilter.value;
@@ -117,14 +117,14 @@
     getDefaultAds(elements);
     toggleArrayElements(mapFilterElements, true);
 
-    mapFilter.addEventListener('change', renderFilteredPins);
+    mapFilter.addEventListener('change', onFilterChange);
   };
 
   var setFilterInactive = function () {
     mapFilter.reset();
     toggleArrayElements(mapFilterElements);
 
-    mapFilter.removeEventListener('change', renderFilteredPins);
+    mapFilter.removeEventListener('change', onFilterChange);
   };
 
   window.filter = {

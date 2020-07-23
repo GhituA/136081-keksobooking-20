@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var MAIN_PIN_HEIGHT_ACTIVE = 87;
   var MIN_TITLE_LENGTH = 30;
   var MAX_TITLE_LENGTH = 100;
   var MAX_PRICE = 1000000;
@@ -9,24 +8,25 @@
   var IMG_DEFAULT_PREVIEW = 'img/muffin-grey.svg';
 
   var adForm = document.querySelector('.ad-form');
-  var resetButton = adForm.querySelector('.ad-form__reset');
+  var adFormElements = adForm.children;
+  var adFormInputs = adForm.querySelectorAll('input');
+  var adFormSelects = adForm.querySelectorAll('select');
 
   var avatarField = adForm.querySelector('#avatar');
   var avatarPreview = adForm.querySelector('.ad-form-header__preview img');
   var titleField = adForm.querySelector('#title');
   var typeField = adForm.querySelector('#type');
   var priceField = adForm.querySelector('#price');
-  var timeinField = adForm.querySelector('#timein');
-  var timeoutField = adForm.querySelector('#timeout');
+  var checkInField = adForm.querySelector('#timein');
+  var checkOutField = adForm.querySelector('#timeout');
   var roomField = adForm.querySelector('#room_number');
   var capacityField = adForm.querySelector('#capacity');
   var imagesField = adForm.querySelector('#images');
   var imagePreview = adForm.querySelector('.ad-form__photo');
 
-  var onUpload = window.load.upload;
-  var renderMessage = window.message.render;
-  var setInactiveMode = window.events.setInactiveMode;
-  var setMainPinCoordinates = window.mainPin.setMainPinCoordinates;
+  var toggleArrayElements = window.util.toggleArrayElements;
+  var addClassToElement = window.util.addClassToElement;
+  var removeClassFromElement = window.util.removeClassFromElement;
 
   var capacityMap = {
     '1': {
@@ -53,51 +53,57 @@
     house: '5000',
     palace: '10000'
   };
-  var messageMap = {
-    success: 'success',
-    error: 'error'
+
+  var setRedBorder = function (formElement) {
+    formElement.style.border = '2px solid #ff5635';
   };
 
-  var checkCapacityValidity = function () {
+  var removeBorder = function (formElement) {
+    formElement.style.border = 'none';
+  };
+
+  var clearErrors = function (elements) {
+    Array.from(elements).forEach(function (element) {
+      element.style.border = 'none';
+    });
+  };
+
+  var onRoomCapacityChange = function () {
     var guests = capacityField.value;
     var rooms = roomField.value;
 
     if (!capacityMap[rooms].guests.includes(guests)) {
       roomField.setCustomValidity(capacityMap[rooms].message);
+      setRedBorder(roomField);
     } else {
       roomField.setCustomValidity('');
+      removeBorder(roomField);
     }
   };
 
-  var checkPriceValidity = function () {
+  var onPriceChange = function () {
     var typeValue = typeField.value;
     priceField.placeholder = typeMap[typeValue];
     priceField.min = typeMap[typeValue];
 
     if (priceField.value < typeMap[typeValue]) {
       priceField.setCustomValidity('Минимальная цена выбранного типа жилья: ' + typeMap[typeValue] + ' за ночь');
+      setRedBorder(priceField);
     } else if (priceField.value > MAX_PRICE) {
       priceField.setCustomValidity('Максимальная цена выбранного типа жилья: 1 000 000 руб. за ночь');
+      setRedBorder(priceField);
     } else {
       priceField.setCustomValidity('');
+      removeBorder(priceField);
     }
   };
 
-  var onFormReset = function () {
-    adForm.reset();
-    resetImagePreviews();
-    setInactiveMode();
-    setMainPinCoordinates(MAIN_PIN_HEIGHT_ACTIVE);
+  var onCheckInChange = function (evt) {
+    checkOutField.value = evt.target.value;
   };
 
-  var onSubmitSuccess = function () {
-    renderMessage(messageMap.success);
-    onFormReset();
-  };
-
-  var onFormSubmit = function (evt) {
-    evt.preventDefault();
-    onUpload(new FormData(adForm), onSubmitSuccess, renderMessage.bind(renderMessage, messageMap.error));
+  var onCheckOutChange = function (evt) {
+    checkInField.value = evt.target.value;
   };
 
   var resetImagePreviews = function () {
@@ -106,7 +112,16 @@
     avatarPreview.src = IMG_DEFAULT_PREVIEW;
   };
 
-  var onFileChange = function (inputField, cb) {
+  var getAvatarPreview = function (value) {
+    avatarPreview.src = value;
+  };
+
+  var getPhotoPreview = function (value) {
+    imagePreview.style.backgroundImage = 'url(' + value + ')';
+    imagePreview.style.backgroundSize = 'cover';
+  };
+
+  var setImagePreview = function (inputField, cb) {
     var file = inputField.files[0];
     var fileName = file.name.toLowerCase();
 
@@ -125,67 +140,76 @@
     }
   };
 
-  var getAvatarPreview = function (value) {
-    avatarPreview.src = value;
+  var onAvatarInput = function () {
+    setImagePreview(avatarField, getAvatarPreview);
   };
 
-  var getPhotoPreview = function (value) {
-    imagePreview.style.backgroundImage = 'url(' + value + ')';
-    imagePreview.style.backgroundSize = 'cover';
+  var onPhotosInput = function () {
+    setImagePreview(imagesField, getPhotoPreview);
   };
 
-  avatarField.addEventListener('change', onFileChange.bind(onFileChange, avatarField, getAvatarPreview));
-
-  titleField.addEventListener('input', function (evt) {
+  var onTitleInput = function (evt) {
     var valueLength = evt.target.value.length;
     if (valueLength === 0) {
-      titleField.setCustomValidity('Это поле обязательно для заполнения');
+      evt.target.setCustomValidity('Это поле обязательно для заполнения');
+      setRedBorder(evt.target);
     } else if (valueLength < MIN_TITLE_LENGTH) {
-      titleField.setCustomValidity('Минимальная длина заголовка: 30 символов. Введите ещё ' + (MIN_TITLE_LENGTH - valueLength) + ' симв.');
+      evt.target.setCustomValidity('Минимальная длина заголовка: 30 символов. Введите ещё ' + (MIN_TITLE_LENGTH - valueLength) + ' симв.');
+      setRedBorder(evt.target);
     } else if (valueLength > MAX_TITLE_LENGTH) {
-      titleField.setCustomValidity('Минимальная длина заголовка: 100 символов. Удалите лишние ' + (valueLength - MAX_TITLE_LENGTH) + ' симв.');
+      evt.target.setCustomValidity('Минимальная длина заголовка: 100 символов. Удалите лишние ' + (valueLength - MAX_TITLE_LENGTH) + ' симв.');
+      setRedBorder(evt.target);
     } else {
-      titleField.setCustomValidity('');
+      evt.target.setCustomValidity('');
+      removeBorder(evt.target);
     }
-  });
+  };
 
-  typeField.addEventListener('change', function () {
-    checkPriceValidity();
-  });
-
-  priceField.addEventListener('change', function () {
-    checkPriceValidity();
-  });
-
-  timeinField.addEventListener('change', function (evt) {
-    timeoutField.value = evt.target.value;
-  });
-
-  timeoutField.addEventListener('change', function (evt) {
-    timeinField.value = evt.target.value;
-  });
-
-  roomField.addEventListener('change', function (evt) {
+  var onRoomsChange = function (evt) {
     var rooms = evt.target.value;
     for (var j = 0; j < capacityField.options.length; j++) {
       capacityField.options[j].disabled = !capacityMap[rooms].guests.includes(capacityField.options[j].value);
     }
-    checkCapacityValidity();
-  });
+    onRoomCapacityChange();
+  };
 
-  capacityField.addEventListener('change', function () {
-    checkCapacityValidity();
-  });
+  var setFormActive = function () {
+    removeClassFromElement(adForm, 'ad-form--disabled');
+    toggleArrayElements(adFormElements, true);
 
-  imagesField.addEventListener('change', onFileChange.bind(onFileChange, imagesField, getPhotoPreview));
+    avatarField.addEventListener('change', onAvatarInput);
+    titleField.addEventListener('input', onTitleInput);
+    typeField.addEventListener('change', onPriceChange);
+    priceField.addEventListener('change', onPriceChange);
+    checkInField.addEventListener('change', onCheckInChange);
+    checkOutField.addEventListener('change', onCheckOutChange);
+    roomField.addEventListener('change', onRoomsChange);
+    capacityField.addEventListener('change', onRoomCapacityChange);
+    imagesField.addEventListener('change', onPhotosInput);
+  };
 
-  resetButton.addEventListener('click', onFormReset);
-  resetButton.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Enter') {
-      onFormReset();
-    }
-  });
+  var setFromInactive = function () {
+    clearErrors(adFormInputs);
+    clearErrors(adFormSelects);
 
-  adForm.addEventListener('submit', onFormSubmit);
+    addClassToElement(adForm, 'ad-form--disabled');
+    toggleArrayElements(adFormElements);
+
+    avatarField.removeEventListener('change', onAvatarInput);
+    titleField.removeEventListener('input', onTitleInput);
+    typeField.removeEventListener('change', onPriceChange);
+    priceField.removeEventListener('change', onPriceChange);
+    checkInField.removeEventListener('change', onCheckInChange);
+    checkOutField.removeEventListener('change', onCheckOutChange);
+    roomField.removeEventListener('change', onRoomsChange);
+    capacityField.removeEventListener('change', onRoomCapacityChange);
+    imagesField.removeEventListener('change', onPhotosInput);
+  };
+
+  window.form = {
+    activate: setFormActive,
+    deactivate: setFromInactive,
+    resetImagePreviews: resetImagePreviews
+  };
 
 })();
